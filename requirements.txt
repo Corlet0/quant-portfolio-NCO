@@ -1,0 +1,11 @@
+numpy>=1.26.0
+pandas>=2.2.0
+scipy>=1.13.0
+scikit-learn>=1.4.0
+cvxpy>=1.4.0
+clarabel>=0.11.0
+skfolio>=0.4.0
+riskfolio-lib>=7.0.0
+yfinance>=0.2.35
+matplotlib>=3.8.0
+plotly>=5.18.0
