@@ -59,7 +59,7 @@ def returns_download(
     type_returns ="simple"
 ):
     """
-    Downloads prices and calculates 
+    Downloads prices and calculates
       if type_returns = "simple" (default):
         simple arithmetic daily returns:
           R_t = (P_t - P_{t-1}) / P_{t-1}
@@ -87,3 +87,19 @@ def returns_download(
       df_returns = np.log(df_prices).diff().dropna()
 
     return df_returns
+
+#------------------------------------------------------------------------------------------------#
+
+def standard_returns(df_returns: pd.DataFrame):
+  """
+  Standardize returns using Z-scores:
+     x_{i,t} = (r_{i,t} - µ_i) / σ_i
+  Returns the normalized matrix AND the vector of volatilities (σ)
+  """
+  mu_returns = df_returns.mean()
+  sigma_returns = df_returns.std()
+
+  standarized_returns = (df_returns - mu_returns) / sigma_returns
+
+  return standarized_returns, sigma_returns
+
