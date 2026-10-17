@@ -9,3 +9,6 @@ riskfolio-lib>=7.0.0
 yfinance>=0.2.35
 matplotlib>=3.8.0
 plotly>=5.18.0
+from scipy.cluster.hierarchy import dendrogram, fcluster, linkage
+from scipy.spatial.distance import squareform
+from sklearn.metrics import silhouette_score
