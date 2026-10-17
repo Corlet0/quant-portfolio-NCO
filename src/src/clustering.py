@@ -17,6 +17,7 @@ def correlation_to_distance(corr_matrix):
     
     return dist
 
+#------------------------------------------------------------------------------------------------#
 
 def build_linkage_matrix(corr_matrix, method="ward"):
     """
@@ -28,6 +29,7 @@ def build_linkage_matrix(corr_matrix, method="ward"):
     
     return dist_matrix, linkage_tree
 
+#------------------------------------------------------------------------------------------------#
 
 def find_optimal_clusters(corr_matrix, min_clusters=2, max_clusters=None, method="ward"):
     """
@@ -63,6 +65,9 @@ def find_optimal_clusters(corr_matrix, min_clusters=2, max_clusters=None, method
 
     return asset_cluster_ids, optimal_num_clusters, linkage_tree
 
+#------------------------------------------------------------------------------------------------#
+                                            #VISUALS#
+#------------------------------------------------------------------------------------------------#
 
 def plot_cluster_dendrogram(linkage_tree, labels, optimal_k=None, figsize=(10, 5)):
     """
