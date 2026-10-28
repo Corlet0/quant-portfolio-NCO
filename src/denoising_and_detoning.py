@@ -127,8 +127,4 @@ def denoise_and_detone(
     # 4. Scale the correlation matrix back to covariance: D * corr_detoned * D
     cov_retoned = volatility_diagonal_matrix @ corr_detoned @ volatility_diagonal_matrix
 
-    # 5. Convert back to Pandas DataFrames with original asset labels
-    corr_df = pd.DataFrame(corr_detoned, index=raw_returns.columns, columns=raw_returns.columns)
-    cov_df = pd.DataFrame(cov_retoned, index=raw_returns.columns, columns=raw_returns.columns)
-
-    return corr_df, cov_df
+    return corr_detoned, cov_retoned
