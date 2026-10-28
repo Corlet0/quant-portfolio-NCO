@@ -66,67 +66,6 @@ def find_optimal_clusters(corr_matrix, min_clusters=2, max_clusters=None, method
     return asset_cluster_ids, optimal_num_clusters, linkage_tree
 
 #------------------------------------------------------------------------------------------------#
-
-def get_cluster_sub_covariances(denoised_cov: np.ndarray, asset_to_cluster: dict) -> dict:
-    """
-    Extracts the localized sub-covariance matrices for all clusters.
-    
-    Parameters:
-        denoised_cov (np.ndarray or pd.DataFrame): Global denoised covariance matrix.
-        asset_to_cluster (dict): Mapping of {asset_name: cluster_id}.
-        
-    Returns:
-        dict: A dictionary mapping cluster_id -> pd.DataFrame of the sliced covariance matrix.
-    """
-    assets_list = list(asset_to_cluster.keys())
-    
-    # Convert denoised_cov to a DataFrame if it's currently a numpy array
-    if isinstance(denoised_cov, np.ndarray):
-        denoised_cov_df = pd.DataFrame(denoised_cov, index=assets_list, columns=assets_list)
-    else:
-        denoised_cov_df = denoised_cov
-
-    cluster_sub_covariances = {}
-    unique_clusters = np.unique(list(asset_to_cluster.values()))
-
-    for cluster_id in unique_clusters:
-        # Identify all assets assigned to the current cluster
-        cluster_assets = [asset for asset, cid in asset_to_cluster.items() if cid == cluster_id]
-        
-        # Slice and store the sub-covariance matrix
-        cluster_sub_covariances[cluster_id] = denoised_cov_df.loc[cluster_assets, cluster_assets]
-
-    return cluster_sub_covariances
-
-#------------------------------------------------------------------------------------------------#
-
-def get_hierarchical_sub_covariances(corr_matrix: pd.DataFrame, denoised_cov: np.ndarray, min_clusters=2, max_clusters=None, method="ward") -> tuple:
-    """
-    High-level coordination function that finds the optimal clusters, maps the assets,
-    and slices the denoised covariance matrix into localized sub-covariance matrices.
-
-    Parameters:
-        corr_matrix (pd.DataFrame): The N x N correlation matrix.
-        denoised_cov (np.ndarray or pd.DataFrame): Global denoised covariance matrix.
-        min_clusters (int): Minimum number of clusters to evaluate.
-        max_clusters (int): Maximum number of clusters to evaluate.
-        method (str): Linkage method.
-
-    Returns:
-        tuple: (asset_to_cluster_dict, cluster_sub_covariances_dict)
-    """
-    # 1. Extract the optimal clusters
-    optimal_clusters_id, _, _ = find_optimal_clusters(corr_matrix.values, min_clusters, max_clusters, method)
-    
-    # 2. Build the mapping dictionary internally
-    mapping_series = pd.Series(optimal_clusters_id, index=corr_matrix.columns)
-    asset_to_cluster_dict = mapping_series.to_dict()
-    
-    # 3. Slice and generate the sub-covariances
-    sub_covariances = get_cluster_sub_covariances(denoised_cov, asset_to_cluster_dict)
-    
-    return asset_to_cluster_dict, sub_covariances
-#------------------------------------------------------------------------------------------------#
                                             #VISUALS#
 #------------------------------------------------------------------------------------------------#
 
