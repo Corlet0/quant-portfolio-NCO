@@ -1,132 +1,134 @@
-def denoise_matrix(standarized_returns: pd.DataFrame) -> pd.DataFrame: 
+import numpy as np
+import pandas as pd
+
+def denoise_matrix(raw_returns: pd.DataFrame) -> np.ndarray:
     """
-    Filters an empirical covariance matrix using Random Matrix Theory (RMT)
+    Filters an empirical correlation matrix using Random Matrix Theory (RMT)
     and the Marchenko-Pastur clipping method.
 
     Parameters:
-        standarized_returns: pd.DataFrame (T days x N assets) of standardized asset returns.
-    
+        raw_returns (pd.DataFrame): T observations x N assets DataFrame of unstandardized asset returns.
+
     Returns:
-        pd.DataFrame: The filtered, noise-reduced correlation matrix.
+        np.ndarray: The filtered, noise-reduced correlation matrix.
     """
     # Get number of observations (T) and number of assets (N)
-    T, N = standarized_returns.shape
+    T, N = raw_returns.shape
+
+    # Compute the empirical correlation matrix internally (inherently standardized)
+    empirical_correlation = raw_returns.corr().values
 
     # Calculate the quality factor Q (ratio of observations to assets)
     Q = T / N
 
-    # Step 1: Compute the empirical correlation matrix
-    empirical_correlation = standarized_returns.corr()
-
-    # Step 2: Perform spectral decomposition (eigenvalues and eigenvectors)
-    # np.linalg.eigh is optimized for symmetric matrices like correlation matrices
-    eigenvalues, eigenvectors = np.linalg.eigh(empirical_correlation.values)
+    # Step 1: Perform spectral decomposition (eigenvalues and eigenvectors)
+    eigenvalues, eigenvectors = np.linalg.eigh(empirical_correlation)
 
     # Sort eigenvalues and eigenvectors in descending order
     idx = eigenvalues.argsort()[::-1]
     sorted_eigenvalues = eigenvalues[idx]
     sorted_eigenvectors = eigenvectors[:, idx]
 
-    # Step 3: Apply the Marchenko-Pastur theoretical upper bound
-    # Since we are working with correlation, the theoretical variance is 1
-    marchenko_pastur_upper_bound = 1 * (1 + np.sqrt(1 / Q))**2
+    # Step 2: Apply the Marchenko-Pastur theoretical upper bound
+    marchenko_pastur_upper_bound = 1.0 * (1.0 + np.sqrt(1.0 / Q))**2
 
-    # Step 4: Identify noise (eigenvalues below or equal to the theoretical threshold)
+    # Step 3: Identify noise (eigenvalues below or equal to the theoretical threshold)
     noise_idx = sorted_eigenvalues <= marchenko_pastur_upper_bound
 
-    # Step 5: Calculate the average of the noise eigenvalues (clipping level)
+    # Step 4: Calculate the average of the noise eigenvalues (clipping level)
     if noise_idx.any():
         average_noise_level = sorted_eigenvalues[noise_idx].mean()
     else:
         average_noise_level = 0.0
 
-    # Step 6: Create the cleaned eigenvalue array by replacing noise with the average
+    # Step 5: Create the cleaned eigenvalue array by replacing noise with the average
     cleaned_eigenvalues = sorted_eigenvalues.copy()
     cleaned_eigenvalues[noise_idx] = average_noise_level
 
-    # Step 7: Reconstruct the cleaned correlation matrix
+    # Step 6: Reconstruct the cleaned correlation matrix
     reconstructed_correlation = sorted_eigenvectors @ np.diag(cleaned_eigenvalues) @ sorted_eigenvectors.T
 
-    # Set diagonal elements to exactly 1.0 (an asset's correlation with itself is always 1)
-    np.fill_diagonal(reconstructed_correlation, 1.0)
-
-    # Convert back to a Pandas DataFrame with original asset labels
-    cleaned_correlation_df = pd.DataFrame(
-        reconstructed_correlation,
-        index=empirical_correlation.index,
-        columns=empirical_correlation.columns
-    )
-
-    return cleaned_correlation_df
+    # Set diagonal elements to exactly 1.0 using proper mathematical rescaling
+    diag_factor = 1.0 / np.sqrt(np.diag(reconstructed_correlation))
+    denoised_corr = np.outer(diag_factor, diag_factor) * reconstructed_correlation
+    np.fill_diagonal(denoised_corr, 1.0)
+    
+    return denoised_corr
 
 #-------------------------------------------------------------------------------------------#
 
-def detone_matrix(corr_matrix: pd.DataFrame) -> pd.DataFrame:
-  """
-  Removal of the primary market eigenvector to isolate idiosyncratic correlations.
-  
-  Parameters:
-      corr_matrix: pd.DataFrame a NxN correlation matrix.
-  
-  Returns:
-      pd.DataFrame: The detoned correlation matrix.
-  """
-  # 1. Finding matrix eigenvalues, eigenvectors (decomposition)
-  eigenvalues, eigenvectors = np.linalg.eigh(corr_matrix.values)
+def detone_matrix(corr_matrix: np.ndarray, num_market_factors: int = 1) -> np.ndarray:
+    """
+    Removal of the primary market eigenvector to isolate idiosyncratic correlations.
+    
+    Parameters:
+        corr_matrix (np.ndarray): A denoised N x N correlation matrix.
+        num_market_factors (int): Number of dominant market factors to remove. Default is 1.
+    
+    Returns:
+        np.ndarray: The detoned correlation matrix.
+    """
+    # 1. Finding matrix eigenvalues, eigenvectors (decomposition)
+    eigenvalues, eigenvectors = np.linalg.eigh(corr_matrix)
 
-  # Sort eigenvalues and eigenvectors in descending order
-  idx = eigenvalues.argsort()[::-1]
-  sorted_eigenvalues = eigenvalues[idx]
-  sorted_eigenvectors = eigenvectors[:, idx]
+    # Sort eigenvalues and eigenvectors in descending order
+    idx = eigenvalues.argsort()[::-1]
+    sorted_eigenvalues = eigenvalues[idx]
+    sorted_eigenvectors = eigenvectors[:, idx]
 
-  # 2. Identifying biggest Eigenvalue and its Eigenvector
-  lambda_1 = sorted_eigenvalues[0]
-  v_1 = sorted_eigenvectors[:, 0]
+    # 2. Subtracting the market risk from the original matrix (parameterized)
+    market_risk = np.zeros_like(corr_matrix)
+    for i in range(num_market_factors):
+        market_risk += sorted_eigenvalues[i] * np.outer(sorted_eigenvectors[:, i], sorted_eigenvectors[:, i])
 
-  # 3. Calculating market systematic risk (tone matrix) using the outer product
-  market_risk = lambda_1 * np.outer(v_1, v_1)
+    detoned_matrix = corr_matrix - market_risk
 
-  # 4. Subtracting the market risk from the original matrix
-  detoned_matrix = corr_matrix.values - market_risk
+    # 3. Rescaling and normalizing using the diagonal elements
+    d = 1.0 / np.sqrt(np.diag(detoned_matrix))
+    correlation_detoned = np.outer(d, d) * detoned_matrix
+    np.fill_diagonal(correlation_detoned, 1.0)
 
-  # 5. Rescaling and normalizing using the diagonal elements
-  d = np.sqrt(np.diag(detoned_matrix))
-  correlation_detoned = detoned_matrix / np.outer(d, d)
-  np.fill_diagonal(correlation_detoned, 1.0)
-
-  return pd.DataFrame(
-      correlation_detoned,
-      index=corr_matrix.index,
-      columns=corr_matrix.columns
-  )
-
+    return correlation_detoned
+      
 #-------------------------------------------------------------------------------------------#
 
-def reconstruct_and_retone(standarized_returns: pd.DataFrame, empirical_volatilities: pd.Series) -> pd.DataFrame:
-  """
-Coordinates the full cleaning pipeline by denoising the empirical correlation matrix, 
-isolating idiosyncratic relations (detoning), and reconstructing the filtered covariance matrix.
+def denoise_and_detone(
+    raw_returns: pd.DataFrame, 
+    detone: bool = True, 
+    num_market_factors: int = 1
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Coordinates the full cleaning pipeline by passing raw returns to the denoising module, 
+    isolating idiosyncratic relations (detoning), and reconstructing the filtered covariance matrix.
 
-Parameters:
-    standarized_returns (pd.DataFrame): T x N DataFrame of standardized asset returns.
-    empirical_volatilities (pd.Series): Series containing the historical standard deviation of each asset.
+    Parameters:
+        raw_returns (pd.DataFrame): T x N DataFrame of unstandardized asset returns.
+        detone (bool): Whether to apply market detoning. Default is True.
+        num_market_factors (int): Number of leading eigenvectors to eliminate if detoning. Default is 1
 
-Returns:
-    tuple: A tuple containing:
-        - pd.DataFrame: The detoned, noise-reduced correlation matrix (N x N).
-        - pd.DataFrame: The re-toned, noise-reduced covariance matrix (N x N).
-"""
-  # denoise matrix
-  corr_denoised = denoise_matrix(standarized_returns)
-  
-  #detone denoised matrix
-  corr_detoned = detone_matrix(corr_denoised)
+    Returns:
+        A tuple containing:
+            - pd.DataFrame: The cleaned, noise-reduced correlation matrix (N x N).
+            - pd.DataFrame: The re-toned, noise-reduced covariance matrix (N x N).
+    """
+    # 1. Denoise matrix 
+    corr_denoised = denoise_matrix(raw_returns)
+    
+    # 2. Detone denoised matrix
+    if detone:
+        corr_detoned = detone_matrix(corr_denoised, num_market_factors)
+    else:
+        corr_detoned = corr_denoised
 
-  # Convert volatilities series into a diagonal matrix
-  volatility_diagonal_matrix = np.diag(empirical_volatilities.values)
+    # 3. Extract empirical volatilities for the re-toning phase
+    empirical_volatilities = np.sqrt(np.diag(raw_returns.cov().values))
+    volatility_diagonal_matrix = np.diag(empirical_volatilities)
 
-  # Scale the correlation matrix back to covariance: D * corr_denoised * D
-  cov_denoised = volatility_diagonal_matrix @ corr_denoised.values @ volatility_diagonal_matrix
+    # 4. Scale the correlation matrix back to covariance: D * corr_detoned * D
+    cov_retoned = volatility_diagonal_matrix @ corr_detoned @ volatility_diagonal_matrix
 
-  return corr_detoned, cov_denoised
+    # 5. Convert back to Pandas DataFrames with original asset labels
+    corr_df = pd.DataFrame(corr_detoned, index=raw_returns.columns, columns=raw_returns.columns)
+    cov_df = pd.DataFrame(cov_retoned, index=raw_returns.columns, columns=raw_returns.columns)
 
+    return corr_df, cov_df
