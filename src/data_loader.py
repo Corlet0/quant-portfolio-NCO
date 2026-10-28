@@ -88,18 +88,4 @@ def returns_download(
 
     return df_returns
 
-#------------------------------------------------------------------------------------------------#
-
-def standard_returns(df_returns: pd.DataFrame):
-  """
-  Standardize returns using Z-scores:
-     x_{i,t} = (r_{i,t} - µ_i) / σ_i
-  Returns the normalized matrix AND the vector of volatilities (σ)
-  """
-  mu_returns = df_returns.mean()
-  sigma_returns = df_returns.std()
-
-  standarized_returns = (df_returns - mu_returns) / sigma_returns
-
-  return standarized_returns, sigma_returns
 
