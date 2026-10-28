@@ -1,6 +1,3 @@
-import numpy as np
-import pandas as pd
-
 def denoise_matrix(raw_returns: pd.DataFrame) -> np.ndarray:
     """
     Filters an empirical correlation matrix using Random Matrix Theory (RMT)
@@ -92,11 +89,7 @@ def detone_matrix(corr_matrix: np.ndarray, num_market_factors: int = 1) -> np.nd
       
 #-------------------------------------------------------------------------------------------#
 
-def denoise_and_detone(
-    raw_returns: pd.DataFrame, 
-    detone: bool = True, 
-    num_market_factors: int = 1
-) -> tuple[pd.DataFrame, pd.DataFrame]:
+def denoise_and_detone(raw_returns: pd.DataFrame, detone: bool = True, num_market_factors: int = 1) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Coordinates the full cleaning pipeline by passing raw returns to the denoising module, 
     isolating idiosyncratic relations (detoning), and reconstructing the filtered covariance matrix.
