@@ -1,7 +1,7 @@
 def prices_download(tickers: str,
                     start_date: str,
                     end_date: str,
-                    interval: str,
+                    interval: str = '1d',
                     max_ffill_days: int = 0
                    ):
   """Imports Adj Prices from yahoo finance into a df.
@@ -15,7 +15,7 @@ def prices_download(tickers: str,
             end_date: str
                 Download end date string (YYYY-MM-DD) E.g. for end=”2023-01-01”, the last data point will be on “2022-12-31”
 
-            interval: str
+            interval: str, default = 1d
                 Valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
 
             max_ffill_days : int, default = 0
