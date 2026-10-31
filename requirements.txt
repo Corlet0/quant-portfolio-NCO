@@ -1,7 +1,3 @@
-
-import io
-import time
-import urllib.request
 numpy>=1.26.0
 pandas>=2.2.0
 scipy>=1.13.0
@@ -13,6 +9,3 @@ riskfolio-lib>=7.0.0
 yfinance>=0.2.35
 matplotlib>=3.8.0
 plotly>=5.18.0
-from scipy.cluster.hierarchy import dendrogram, fcluster, linkage
-from scipy.spatial.distance import squareform
-from sklearn.metrics import silhouette_score
