@@ -1,3 +1,7 @@
+import pandas as pd
+import numpy as np
+import yfinance as yf
+
 def prices_download(tickers: str,
                     start_date: str,
                     end_date: str,
