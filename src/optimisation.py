@@ -47,7 +47,7 @@ def solve_inner_min_variance(sub_cov: np.ndarray) -> np.ndarray:
 
     except Exception:
         # Fallback: Inverse-variance allocation to ensure uninterrupted execution
-        inv_diag = 1.0 / np.clip(np.diag(sub_cov), 1e-8)
+        inv_diag = 1.0 / np.clip(np.diag(sub_cov), 1e-8, None)
         return inv_diag / np.sum(inv_diag)
 
 #-------------------------------------------------------------------------------------------##-------------------------------------------------------------------------------------------#
