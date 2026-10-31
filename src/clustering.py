@@ -7,6 +7,13 @@ Hierarchical clustering engine:
 - Dendrogram visualization
 """
 
+from scipy.cluster.hierarchy import dendrogram, fcluster, linkage
+from scipy.spatial.distance import squareform
+from sklearn.metrics import silhouette_score
+import pandas as pd
+import numpy as np
+import matplolib.py as plt
+
 def correlation_to_distance(corr_matrix):
     """
     Transforms a correlation matrix into a proper Euclidean distance metric bounded in [0, 1].
