@@ -69,7 +69,7 @@ def solve_inner_equal_risk_contribution(sub_cov: np.ndarray) -> np.ndarray:
         return np.array([1.0])
 
     # 1. Extract the diagonal variances and compute standard deviations (volatilities)
-    vols = np.sqrt(np.clip(np.diag(sub_cov), 1e-8))
+    vols = np.sqrt(np.clip(np.diag(sub_cov), 1e-8n None))
 
     # 2. Compute inverse-volatility weights
     inv_vols = 1.0 / vols
