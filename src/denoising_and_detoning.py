@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 def denoise_matrix(raw_returns: pd.DataFrame) -> np.ndarray:
     """
     Filters an empirical correlation matrix using Random Matrix Theory (RMT)
