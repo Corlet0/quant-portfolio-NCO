@@ -12,7 +12,7 @@ from scipy.spatial.distance import squareform
 from sklearn.metrics import silhouette_score
 import pandas as pd
 import numpy as np
-import matplolib.pyplot as plt
+import matplotlib.pyplot as plt
 
 def correlation_to_distance(corr_matrix):
     """
