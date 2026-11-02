@@ -86,7 +86,7 @@ def inner_cluster_weights(cov_clean: np.ndarray, cluster_ids: np.ndarray, method
     Parameters:
         cov_clean (np.ndarray): Full N x N cleaned/re-toned covariance matrix.
         cluster_ids (np.ndarray): 1D array of length N containing 0-indexed cluster IDs.
-        method (str): How the optimisation is computed. 'MV' for Minimum Variance; 'ERC' for Equal Risk Contribution
+        method (str): How the optimisation is computed. 'MinVar' for Minimum Variance; 'ERC' for Equal Risk Contribution
 
     Returns:
         np.ndarray: Block-diagonal weight matrix V of shape (N, K).
@@ -106,12 +106,12 @@ def inner_cluster_weights(cov_clean: np.ndarray, cluster_ids: np.ndarray, method
         sub_cov = cov_clean[np.ix_(asset_indices, asset_indices)]
 
         # 3. Run inner optimization
-        if method == 'MV':
+        if method == 'MinVar':
           w_cluster = solve_inner_min_variance(sub_cov)
         elif method == 'ERC':
             w_cluster = solve_inner_equal_risk_contribution(sub_cov)
         else:
-            raise ValueError(f"Unknown optimization method: {method}. Use 'MV' or 'ERC'.")
+            raise ValueError(f"Unknown optimization method: {method}. Use 'MinVar' or 'ERC'.")
         
         # 4. Map the local weights back to their global positions in V
         V[asset_indices, k] = w_cluster
