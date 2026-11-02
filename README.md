@@ -306,9 +306,11 @@ print(NCO)
 
 2. **Lopez de Prado, M. (2020).** *Machine Learning for Asset Managers.* Cambridge University Press (Elements in Quantitative Finance).
 
-3. **Laloux, L., Cizeau, P., Bouchaud, J. P., & Potters, M. (1999).** *Noise Dressing of Financial Correlation Matrices.* Physical Review Letters, 83(7), 1467.
+3. **Marchenko, V. A. & Pastur, L. A. (1967).** Distribution of eigenvalues for some sets of random matrices. 
 
-4. **Maillard, S., Roncalli, T., & Teiletche, J. (2010).** *The Properties of Equally Weighted Risk Contribution Portfolios.* The Journal of Portfolio Management, 36(4), 60-70.
+4. **Laloux, L., Cizeau, P., Bouchaud, J. P., & Potters, M. (1999).** *Noise Dressing of Financial Correlation Matrices.* Physical Review Letters, 83(7), 1467.
+
+5. **Maillard, S., Roncalli, T., & Teiletche, J. (2010).** *The Properties of Equally Weighted Risk Contribution Portfolios.* The Journal of Portfolio Management, 36(4), 60-70.
 
 ## 8. Disclaimer
 
