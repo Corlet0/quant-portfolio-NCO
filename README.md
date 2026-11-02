@@ -65,6 +65,13 @@ $$\widehat{C}_{\text{raw denoised}}=W\widetilde{\Lambda}W^\top,\qquad\widetilde{
 
 where $D_{\widetilde{C}}=\{diag}\left(\widehat{C}_{\text{raw denoised}}\right)$.
 
+<p align="center">
+  <img src="assets/marchenko_pastur_clipping.png" width="85%" alt="Eigenvalue Spectrum Comparison" />
+</p>
+<p align="center">
+  <em>Figure 1: Empirical eigenvalue distribution against the theoretical Marchenko-Pastur noise boundary. Components inside the noise band are clipped to their mean level.</em>
+</p>
+
 **Market Mode Removal (Detoning):** The largest eigenvalue $\tilde{\lambda}_1$ and its dominant eigenvector $w_1$ represent the pervasive market factor. Removing this global mode isolates structural sector and industry relationships for clustering:
 
 $$
@@ -76,6 +83,13 @@ $$
 $$
 \hat{\Sigma}_{\text{clean}} =  \left( D_\sigma \tilde{C} D_\sigma \right)
 $$
+
+<p align="center">
+  <img src="assets/correlation_denoising_stages.png" width="100%" alt="Correlation Matrix Transformation Stages" />
+</p>
+<p align="center">
+  <em>Figure 2: Correlation matrix transformation across three stages: (1) Raw empirical sample correlation, (2) Marchenko-Pastur denoised correlation, and (3) Detoned idiosyncratic correlation ready for distance-tree clustering.</em>
+</p>
 
 ### 2.2 Metric Space Transformation & Ward Hierarchical Clustering
 
