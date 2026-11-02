@@ -102,20 +102,22 @@ Given the partition $\{I_1, I_2, \dots, I_{K^*}\}$, each cluster $k$ extracts it
 * **Option A — Minimum Variance (MinVar):**
 
   $$
-  v_k^* = \arg\min_{v_k \in \mathbb{R}^{\vert I_k \vert}} \; v_k^\top \Sigma_k v_k \quad \text{s.t.} \quad \mathbf{1}^\top v_k = 1, \quad v_k \ge 0
+  v_k^\ast = \arg\min_{v_k \in \mathbb{R}^{\vert I_k \vert}} \; v_k^\top \Sigma_k v_k \quad \text{s.t.} \quad \mathbf{1}^\top v_k = 1, \quad v_k \ge 0
   $$
 
-* **Option B — Equal Risk Contribution (ERC / Risk Parity):**
-  Equalizes the marginal risk contribution $\text{RC}_i(v_k)$ of every constituent asset $i \in I_k$ to total intra-cluster volatility $\sigma_k(v_k) = \sqrt{v_k^\top \Sigma_k v_k}$:
+* **Option B — Equal Risk Contribution (ERC / Risk Parity):** Equalizes the marginal risk contribution $\text{RC}_i(v_k)$ of every constituent asset $i \in I_k$ to total intra-cluster volatility $\sigma_k(v_k) = \sqrt{v_k^\top \Sigma_k v_k}$:
 
   $$
-  v_k^* = \arg\min_{v_k \in \mathbb{R}^{\vert I_k \vert}} \sum_{i \in I_k} \left( \frac{v_{k,i} (\Sigma_k v_k)_i}{\sigma_k(v_k)} - \frac{\sigma_k(v_k)}{\vert I_k \vert} \right)^2 \quad \text{s.t.} \quad \mathbf{1}^\top v_k = 1, \quad v_k \ge 0
+  v_k^\ast = \arg\min_{v_k \in \mathbb{R}^{\vert I_k \vert}} \sum_{i \in I_k} \left( \frac{v_{k,i} (\Sigma_k v_k)_i}{\sigma_k(v_k)} - \frac{\sigma_k(v_k)}{\vert I_k \vert} \right)^2 \quad \text{s.t.} \quad \mathbf{1}^\top v_k = 1, \quad v_k \ge 0
   $$
 
-The optimal intra-cluster weight vectors $\{v_1^*, \dots, v_{K^*}^*\}$ are assembled into a sparse, block-diagonal cluster projection matrix $V \in \mathbb{R}^{N \times K^*}$:
+The optimal intra-cluster weight vectors $\{v_1^\ast, \dots, v_{K^\ast}^\ast\}$ are assembled into a sparse, block-diagonal cluster projection matrix $V \in \mathbb{R}^{N \times K^\ast}$:
 
 $$
-V_{i,k} = \begin{cases} v_{k, i}^* & \text{if asset } i \in I_k \\ 0 & \text{otherwise} \end{cases}
+V_{i,k} = \begin{cases} 
+v_{k,i}^\ast & \text{if asset } i \in I_k \\ 
+0 & \text{otherwise} 
+\end{cases}
 $$
 
 ### 2.4 Momentum-Adjusted Shrinkage Returns & Outer-Loop Max Sharpe
@@ -126,7 +128,7 @@ $$
 \mu_{\text{mom}, i} = \frac{1}{\hat{\sigma}_i} \sum_{\tau=1}^{L} \tilde{w}_\tau r_{i, t-\tau}, \quad \tilde{w}_\tau = \frac{\exp(-\lambda_{\text{decay}} \tau)}{\sum_{s=1}^{L} \exp(-\lambda_{\text{decay}} s)}
 $$
 
-To mitigate estimation variance in extreme momentum outliers, raw momentum signals are shrunk via **James-Stein / Empirical Bayes linear shrinkage** toward the cross-sectional grand mean $\bar{\mu}_0 = \frac{1}{N}\sum_{i=1}^N \mu_{\text{mom}, i}$ with shrinkage intensity $\alpha \in [0, 1]$:
+To mitigate estimation variance in extreme momentum outliers, raw momentum signals are shrunk via **James-Stein / Empirical Bayes linear shrinkage** toward the cross-sectional grand mean $\bar{\mu}_0 = \frac{1}{N}\sum_{i=1}^{N} \mu_{\text{mom}, i}$ with shrinkage intensity $\alpha \in [0, 1]$:
 
 $$
 \hat{\mu}_{\text{shrunk}} = (1 - \alpha) \mu_{\text{mom}} + \alpha \bar{\mu}_0 \mathbf{1}_N
@@ -156,8 +158,7 @@ $$
 
 ```
 quant-portfolio-NCO/
-├── notebooks/
-│   └── 01_nco_execution.ipynb    # Walk-forward execution and interactive visualizations
+│  
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py            # Market data ingestion & simple returns
