@@ -73,7 +73,7 @@ $$
 C_{\text{detoned}} = \tilde{C} - \tilde{\lambda}_1 w_1 w_1^\top, \quad C_{\text{clean}} = \text{diag}(C_{\text{detoned}})^{-1/2} C_{\text{detoned}} \text{diag}(C_{\text{detoned}})^{-1/2}
 $$
 
-**Covariance Re-toning & Shrinkage:** While $C_{\text{clean}}$ is passed to the clustering engine, convex portfolio optimizers require full volatility scaling. Using the diagonal empirical standard deviation matrix $D_\sigma = \text{diag}(\hat{\sigma}_1, \dots, \hat{\sigma}_N)$ and Ledoit-Wolf shrinkage intensity $\delta \in [0, 1]$ toward a structured target $F$, the regularized covariance matrix is reconstructed as:
+**Covariance Re-toning:** While $C_{\text{clean}}$ is passed to the clustering engine, convex portfolio optimizers require full volatility scaling. Using the diagonal empirical standard deviation matrix $D_\sigma = \text{diag}(\hat{\sigma}_1, \dots, \hat{\sigma}_N)$, the regularized covariance matrix is reconstructed as:
 
 $$
 \hat{\Sigma}_{\text{clean}} =  \left( D_\sigma \tilde{C} D_\sigma \right)
