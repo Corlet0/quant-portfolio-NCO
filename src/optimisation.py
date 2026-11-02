@@ -242,7 +242,7 @@ def run_nco_outer_pipeline(
     lookback_days: int = 126,
     daily_risk_free_rate: float = 0.0,
     risk_aversion: float = 0.5
-) -> pd.Series:
+):
     """
     Coordinates expected return estimation, outer-loop cluster allocation,
     and asset-level synthesis using simple returns directly.
