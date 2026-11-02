@@ -63,27 +63,11 @@ $$
 
 The denoised correlation matrix is reconstructed and rescaled to enforce a unit diagonal:
 
-$$
-\widehat{C}_{\text{raw denoised}}
-=
-W\widetilde{\Lambda}W^\top,
-\qquad
-\widetilde{C}
-=
-D_{\widetilde{C}}^{-1/2}
-\widehat{C}_{\text{raw denoised}}
-D_{\widetilde{C}}^{-1/2}
-$$
+$$\widehat{C}_{\text{raw denoised}}=W\widetilde{\Lambda}W^\top,\qquad\widetilde{C}=D_{\widetilde{C}}^{-1/2}\widehat{C}_{\text{raw denoised}}D_{\widetilde{C}}^{-1/2}$$
 
 where
-
 $$
-D_{\widetilde{C}}
-=
-\operatorname{diag}
-\left(
-\widehat{C}_{\text{raw denoised}}
-\right).
+D_{\widetilde{C}}=\{diag}\left(\widehat{C}_{\text{raw denoised}}\right).
 $$
 
 **Market Mode Removal (Detoning):** The largest eigenvalue $\tilde{\lambda}_1$ and its dominant eigenvector $w_1$ represent the pervasive market factor. Removing this global mode isolates structural sector and industry relationships for clustering:
