@@ -136,6 +136,13 @@ v_{k,i}^\star & \text{if asset } i \in I_k \\
 \end{cases}
 $$
 
+<p align="center">
+  <img src="assets/projection_matrix_V.png" width="55%" alt="Asset Cluster Memberships & Projection Weights V (ERC)" />
+</p>
+<p align="center">
+  <em>Figure 4: Sparse block-diagonal projection matrix 𝑉 ∈ ℝ𝑁×3 solved via <strong>Equal Risk Contribution (ERC)</strong>. Assets are grouped by cluster partition (red dividers). ERC equalizes marginal risk contributions within each cluster, preventing corner solutions (zero-weights) and ensuring 𝟏⊤𝑣𝑘 = 1 with zero inter-cluster leakage.</em>
+</p>
+
 ### 2.4 Momentum-Adjusted Shrinkage Returns & Outer-Loop Max Sharpe
 
 **Momentum & Shrinkage Formulation:** For each asset $i \in \{1, \dots, N\}$, we compute an exponentially weighted, volatility-adjusted momentum signal over lookback window $L$ with decay half-life $H$ (decay rate $\lambda_{\text{decay}} = \frac{\ln(2)}{H}$):
@@ -171,6 +178,13 @@ where $w_{\max}$ enforces the global single-security concentration cap.
 $$
 w_{\text{final}} = V \omega^*
 $$
+
+<p align="center">
+  <img src="assets/portfolio_weights_allocation.png" width="75%" alt="NCO Portfolio Asset Weights Allocation" />
+</p>
+<p align="center">
+  <em>Figure 5: Final synthesized portfolio allocations (w_final). Colors indicate cluster assignment, illustrating balanced diversification across meta-clusters.</em>
+</p>
 
 ## 3. Repository Structure
 
