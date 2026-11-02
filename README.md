@@ -190,7 +190,9 @@ $$
 
 ```
 quant-portfolio-NCO/
-│  
+│
+├── assets/                       # Illustrative graphs for README.md
+│
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py            # Market data ingestion & simple returns
