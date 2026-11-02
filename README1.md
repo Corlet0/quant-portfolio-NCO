@@ -233,11 +233,11 @@ sys.path.append('.')
 The modular `src/` architecture enables end-to-end execution in a few lines of Python:
 
 ```
-import pandas as pd
-from src.data_loader import fetch_clean_returns
-from src.denoising import clean_covariance_pipeline
-from src.clustering import get_optimal_clusters_ward
-from src.optimizer import run_nco_pipeline
+import yfinance as yf
+from src.data_loader import *
+from src.denoising_and_detoning import *
+from src.clustering import *
+from src.optimisation import *
 
 start = '2024-10-31'
 end = '2026-10-30'
