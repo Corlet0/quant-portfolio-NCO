@@ -272,31 +272,34 @@ print(NCO)
 ## 6. Strategy Workflow & Parameters
 
 ```
-
 [Raw Daily Prices (T x N)]
    │
    ▼
-  [Discrete Simple Returns] ────── ────── ────── ────── ────── ────── ────── ────┤
-   │                                                                             │                                                    
-   ▼                                                                             ▼ 
-[Marchenko-Pastur PCA Denoising]                                     [Expected Returns Estimation]
-   │                                                    (Sortino Momentum Filter + James-Stein Shrinkage)
-   │                                                                             │
-   ├──► [Market Mode Detoning (C_clean)]                                         │
-   │       │                                                                     │
-   │       ▼                                                                     │
-   │    [Distance D = sqrt(0.5*(1 - C_clean)) & Ward Tree]                       │
-   │       │                                                                     │
-   └──► [Re-toned & Shrunk Covariance (Σ_clean)]                                 │                       
-           │                                                                     │    
-           ▼                                                                     │    
-   [Inner Loop: Intra-Cluster ERC / MinVar (Matrix V)]                           │     
-           │                                                                     │   
-           ▼                                                                     │   
-   [Outer Loop: Max Sharpe across K* Syntethic-Assets  ◄── ── ── ── ── ── ── ── ─┤
-           │                                                                     
-           ▼
-   [Final Synthesized Portfolio Weights: w_final = V * ω*]                      
+[Discrete Simple Returns] ───────────────────────────────────────────────────┐
+   │                                                                         │
+   ▼                                                                         ▼
+[Marchenko-Pastur PCA Denoising]                               [Expected Returns Estimation]
+   │                                                  (Sortino Momentum + James-Stein Shrinkage: μ_JS)
+   ▼                                                                         │
+[Market Mode Detoning (C_clean)]                                             │
+   │                                                                         │
+   ├──────────────────────────────────────┐                                  │
+   ▼                                      ▼                                  │
+[Distance D = sqrt(0.5*(1 - C_clean))] [Re-toned Covariance (Σ_retoned)]     │
+   │                                      │                                  │
+   ▼                                      │                                  │
+[Ward Tree & Silhouette (K* Clusters)]    │                                  │
+   │                                      │                                  │
+   └──────────────────┬───────────────────┘                                  │
+                      ▼                                                      │
+     [Inner Loop: Intra-Cluster ERC / MinVar (Matrix V)]                     │
+                      │                                                      │
+                      ▼                                                      │
+     [Outer Loop: Max Sharpe across K* Synthetic Meta-Assets] ◄──────────────┘
+          (Σ_outer = V' Σ_retoned V,  μ_outer = V' μ_JS)
+                      │
+                      ▼
+     [Final Synthesized Portfolio Weights: w_final = V * ω*]           
 
 ```
 
