@@ -61,11 +61,30 @@ $$
 \tilde{\lambda}_i = \begin{cases} \lambda_i & \text{if } \lambda_i > \lambda_+ \quad (i = 1, \dots, M) \\ \frac{1}{N - M} \sum_{j=M+1}^{N} \lambda_j & \text{if } \lambda_i \le \lambda_+ \quad (i = M+1, \dots, N) \end{cases}
 $$
 
-The denoised correlation matrix $\tilde{C}$ is reconstructed and rescaled to enforce a unit diagonal:
+The denoised correlation matrix is reconstructed and rescaled to enforce a unit diagonal:
 
-$$\hat{C}_{\text{raw\_denoised}} = W \tilde{\Lambda} W^\top, \quad \tilde{C} = D_{\tilde{C}}^{-1/2} \hat{C}_{\text{raw\_denoised}} D_{\tilde{C}}^{-1/2}$$
+$$
+\widehat{C}_{\text{raw denoised}}
+=
+W\widetilde{\Lambda}W^\top,
+\qquad
+\widetilde{C}
+=
+D_{\widetilde{C}}^{-1/2}
+\widehat{C}_{\text{raw denoised}}
+D_{\widetilde{C}}^{-1/2}
+$$
 
-where $$D_{\tilde{C}} = \text{diag}(\hat{C}_{\text{raw\_denoised}})$$
+where
+
+$$
+D_{\widetilde{C}}
+=
+\operatorname{diag}
+\left(
+\widehat{C}_{\text{raw denoised}}
+\right).
+$$
 
 **Market Mode Removal (Detoning):** The largest eigenvalue $\tilde{\lambda}_1$ and its dominant eigenvector $w_1$ represent the pervasive market factor. Removing this global mode isolates structural sector and industry relationships for clustering:
 
