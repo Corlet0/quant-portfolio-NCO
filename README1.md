@@ -24,8 +24,6 @@ Modern Portfolio Theory (MPT) and classical single-stage Mean-Variance Optimizat
 
 * **Regularized Alpha Engine:** Cross-sectional EWMA momentum extraction paired with linear shrinkage toward the grand cross-sectional mean to prevent outer-loop weight explosions.
 
-* **Rigorous Out-of-Sample Validation:** Expanding/rolling Walk-Forward backtesting and Combinatorially Purged Cross-Validation (CPCV) accounting for bid-ask spread turnover penalties.
-
 | Category | Core Libraries | 
 | ----- | ----- | 
 | **Numerical & Matrix Algebra** | `numpy`, `scipy`, `pandas` | 
