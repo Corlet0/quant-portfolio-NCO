@@ -63,11 +63,26 @@ $$
 
 The denoised correlation matrix $\tilde{C}$ is reconstructed and rescaled to enforce a unit diagonal:
 
-$$
-\hat{C}_{\text{raw\_denoised}} = W \tilde{\Lambda} W^\top, \quad \tilde{C} = D_{\tilde{C}}^{-1/2} \hat{C}_{\text{raw\_denoised}} D_{\tilde{C}}^{-1/2}
-$$
+\[
+\widehat{C}_{\text{raw denoised}}
+=
+W\widetilde{\Lambda}W^\top,
+\qquad
+\widetilde{C}
+=
+D_{\widetilde{C}}^{-1/2}
+\widehat{C}_{\text{raw denoised}}
+D_{\widetilde{C}}^{-1/2}
+\]
 
-where $D_{\tilde{C}} = \text{diag}(\hat{C}_{\text{raw\_denoised}})$.
+where \[
+D_{\widetilde{C}}
+=
+\operatorname{diag}
+\left(
+\widehat{C}_{\text{raw denoised}}
+\right)
+\]
 
 **Market Mode Removal (Detoning):** The largest eigenvalue $\tilde{\lambda}_1$ and its dominant eigenvector $w_1$ represent the pervasive market factor. Removing this global mode isolates structural sector and industry relationships for clustering:
 
@@ -308,9 +323,7 @@ Raw Daily Prices (T x N)
 
 3. **Laloux, L., Cizeau, P., Bouchaud, J. P., & Potters, M. (1999).** *Noise Dressing of Financial Correlation Matrices.* Physical Review Letters, 83(7), 1467.
 
-4. **Cotton, P. (2023).** *Schur Complementary Portfolios – a Unification of Machine Learning and Optimization-Based Portfolio Construction*.
-
-5. **Maillard, S., Roncalli, T., & Teiletche, J. (2010).** *The Properties of Equally Weighted Risk Contribution Portfolios.* The Journal of Portfolio Management, 36(4), 60-70.
+4. **Maillard, S., Roncalli, T., & Teiletche, J. (2010).** *The Properties of Equally Weighted Risk Contribution Portfolios.* The Journal of Portfolio Management, 36(4), 60-70.
 
 ## 8. Disclaimer
 
