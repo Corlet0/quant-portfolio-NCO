@@ -107,6 +107,14 @@ $$
 
 The optimal number of clusters $K^* \in \{2, \dots, K_{\max}\}$ is selected automatically by maximizing the global **Silhouette Coefficient** across all candidate cuts of the linkage tree.
 
+<p align="center">
+  <img src="assets/hierarchical_dendrogram.png" width="58%" alt="Ward Hierarchical Clustering Tree" />
+  <img src="assets/silhouette_optimization.png" width="40%" alt="Silhouette Score Optimization Curve" />
+</p>
+<p align="center">
+  <em>Figure 3: Left: Ward's linkage dendrogram cut at the optimal threshold (K=3). Right: Mean Silhouette score across candidate partitions, confirming K=3 as the global structural optimum.</em>
+</p>
+
 ### 2.3 Inner Loop: Intra-Cluster Risk Optimization
 
 Given the partition $\{I_1, I_2, \dots, I_{K^*}\}$, each cluster $k$ extracts its localized covariance sub-block $\Sigma_k \in \mathbb{R}^{\vert I_k \vert \times \vert I_k \vert}$ from $\hat{\Sigma}_{\text{clean}}$. To prevent noise amplification among collinear assets, expected returns are strictly omitted in the inner loop. The user can configure either **Minimum Variance (MinVar)** or **Equal Risk Contribution (ERC)**:
