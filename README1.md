@@ -18,7 +18,7 @@ Modern Portfolio Theory (MPT) and classical single-stage Mean-Variance Optimizat
 
 ### Key Features & Tech Stack
 
-* **Spectral Matrix Sanitization:** Constant residual eigenvalue clipping (PCA denoising), market mode removal (detoning), and Ledoit-Wolf covariance shrinkage.
+* **Spectral Matrix Sanitization:** Constant residual eigenvalue clipping (PCA denoising) & market mode removal (detoning)
 
 * **Decoupled Dual-Loop Solvers:** Supports `MinVar` and `ERC` in the inner loop and constrained `MaxSharpe` or `MaxSortino` in the outer loop with dynamic single-asset weight bounds.
 
