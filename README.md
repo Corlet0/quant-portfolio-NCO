@@ -27,7 +27,7 @@ Modern Portfolio Theory (MPT) and classical single-stage Mean-Variance Optimizat
 | **Numerical & Matrix Algebra** | `numpy`, `scipy`, `pandas` | 
 | **Convex Optimization & Risk** | `cvxpy`, `clarabel` | 
 | **Machine Learning & Clustering** | `scikit-learn` | 
-| **Data Ingestion & Visualization** | `yfinance`, `matplotlib`, `seaborn`, `plotly` | 
+| **Data Ingestion & Visualization** | `yfinance`, `matplotlib`, `seaborn` | 
 
 ## 2. Mathematical Framework
 
