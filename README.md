@@ -123,9 +123,19 @@ Given the partition $\{I_1, I_2, \dots, I_{K^*}\}$, each cluster $k$ extracts it
 
   $$v_k^\star = \arg\min_{v_k \in \mathbb{R}^{\vert I_k \vert}} \; v_k^\top \Sigma_k v_k \quad \text{s.t.} \quad \mathbf{1}^\top v_k = 1, \quad v_k \ge 0$$
 
-* **Option B — Equal Risk Contribution (ERC / Risk Parity):** Equalizes the marginal risk contribution $\text{RC}_i(v_k)$ of every constituent asset $i \in I_k$ to total intra-cluster volatility $\sigma_k(v_k) = \sqrt{v_k^\top \Sigma_k v_k}$:
+* **Option B — Equal Risk Contribution (ERC / Risk Parity):** Equalizes the marginal risk contribution $\text{RC}_i(v_k)$ of every constituent asset $i \in I_k$ to the total intra-cluster volatility.
 
-  $$v_k^\star = \arg\min_{v_k \in \mathbb{R}^{\vert I_k \vert}} \sum_{i \in I_k} \left( \frac{v_{k,i} (\Sigma_k v_k)_i}{\sigma_k(v_k)} - \frac{\sigma_k(v_k)}{\vert I_k \vert} \right)^2 \quad \text{s.t.} \quad\mathbf{1}^\top v_k = 1, \quad v_k \ge 0$$
+To guarantee a unique solution without corner solutions on highly collinear clusters, this pipeline implements **Spinu’s (2013) algorithm**. Spinu reframes the ERC objective away from standard quadratic programming, solving it instead as the minimization of a strictly convex, self-concordant function $F(x)$ via a Nesterov-damped Newton method:
+
+$$w_k^\star = \arg\min_{w \in \mathbb{R}_{++}^{|I_k|}}\left(
+\frac{1}{2}w^\top \Sigma_k w-\sum_{i \in I_k} \ln(w_i)\right)$$
+
+The resulting solution is normalized to satisfy the fully-invested constraint:
+
+$$
+v_k^\star =
+\frac{w_k^\star}{\mathbf{1}^\top w_k^\star}
+$$
 
 The optimal intra-cluster weight vectors $\{v_1, \dots, v_{K}\}$ are assembled into a sparse, block-diagonal cluster projection matrix $V \in \mathbb{R}^{N \times K}$:
 
@@ -349,6 +359,8 @@ print(NCO)
 4. **Laloux, L., Cizeau, P., Bouchaud, J. P., & Potters, M. (1999).** *Noise Dressing of Financial Correlation Matrices.* Physical Review Letters, 83(7), 1467.
 
 5. **Maillard, S., Roncalli, T., & Teiletche, J. (2010).** *The Properties of Equally Weighted Risk Contribution Portfolios.* The Journal of Portfolio Management, 36(4), 60-70.
+   
+6. **Spinu, F. (2013).** An Algorithm for Computing Risk Parity Weights. SSRN Working Paper. https://doi.org/10.2139/ssrn.2297383 
 
 ## 8. Disclaimer
 
