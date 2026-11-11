@@ -360,7 +360,7 @@ print(NCO)
 
 5. **Maillard, S., Roncalli, T., & Teiletche, J. (2010).** *The Properties of Equally Weighted Risk Contribution Portfolios.* The Journal of Portfolio Management, 36(4), 60-70.
    
-6. **Spinu, F. (2013).** An Algorithm for Computing Risk Parity Weights. SSRN Working Paper. https://doi.org/10.2139/ssrn.2297383 
+6. **Spinu, F. (2013).** An Algorithm for Computing Risk Parity Weights. Available at SSRN 2297383 
 
 ## 8. Disclaimer
 
