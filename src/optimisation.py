@@ -63,20 +63,49 @@ def solve_inner_equal_risk_contribution(sub_cov: np.ndarray) -> np.ndarray:
         np.ndarray: Optimal intra-cluster weight vector summing to 1.0.
     """
     n = sub_cov.shape[0]
-
-    # Trivial base case: a single-asset cluster receives 100% weight
+    
+    # Base case for a single-asset cluster
     if n == 1:
         return np.array([1.0])
 
-    # 1. Extract the diagonal variances and compute standard deviations (volatilities)
-    vols = np.sqrt(np.clip(np.diag(sub_cov), 1e-8n None))
+    w = cp.Variable(n)
+    
+    # computing portfolio risk to minimize in further steps
+    # cp.psd_wrap is mandatory to bypass DCP precision errors from RMT denoising
+    portfolio_risk = 0.5 * cp.quad_form(w, cp.psd_wrap(sub_cov))
+    
+    # logarithmic penalization (forcing diversification)
+    concentration_penalty = cp.sum(cp.log(w))
+    
+    # Objective: looking for equilibrium
+    objective = cp.Minimize(portfolio_risk - concentration_penalty)
+    
+    # Conditions: Long-Only position
+    # (cp.log already implies w > 0, but 1e-8 aids solver stability)
+    constraints = [w >= 1e-8]
+    
+    problem = cp.Problem(objective, constraints)
+    
+    try:
+        # Clarabel is excellent for exponential cone problems like cp.log
+        problem.solve(solver=cp.CLARABEL)
+        
+        if w.value is None:
+            raise ValueError("Solver failed to converge.")
+            
+        # Normalization (weights to sum 1.0) and error handling (no negative weights)
+        clean_weights = np.maximum(0.0, w.value)
+        weights_erc = clean_weights / np.sum(clean_weights)
+        
+        return weights_erc
+        
+    except Exception as e:
+        # Analytical fallback to prevent the NCO pipeline from halting
+        print(f"ERC Solver failed: {e}. Defaulting to Inverse Variance.")
+        inv_diag = 1.0 / np.clip(np.diag(sub_cov), 1e-8, None)
+        return inv_diag / np.sum(inv_diag)
 
-    # 2. Compute inverse-volatility weights
-    inv_vols = 1.0 / vols
-
-    # 3. Normalize weights to sum to 1.0
-    return inv_vols / np.sum(inv_vols)
-
+   
 #-------------------------------------------------------------------------------------------##-------------------------------------------------------------------------------------------#
 
 def inner_cluster_weights(cov_clean: np.ndarray, cluster_ids: np.ndarray, method: str):
